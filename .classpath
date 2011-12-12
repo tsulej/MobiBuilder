@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="con" path="GROOVY_SUPPORT"/>
+	<classpathentry exported="true" kind="con" path="GROOVY_DSL_SUPPORT"/>
+	<classpathentry kind="lib" path="lib/nekohtml.jar"/>
+	<classpathentry kind="lib" path="lib/nekohtmlSamples.jar"/>
+	<classpathentry kind="lib" path="lib/resolver.jar"/>
+	<classpathentry kind="lib" path="lib/serializer.jar"/>
+	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="lib/xercesSamples.jar"/>
+	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

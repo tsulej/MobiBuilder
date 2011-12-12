@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE ncx PUBLIC "-//NISO//DTD ncx 2005-1//EN" "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd">
+<ncx xmlns:mbp='http://mobipocket.com/ns/mbp' xmlns='http://www.daisy.org/z3986/2005/ncx/' version='2005-1' xml:lang='pl'>
+  <head>
+    <meta name='dtb:uid' content='book_id' />
+    <meta name='dtb:depth' content='2' />
+    <meta name='dtb:totalPageCount' content='0' />
+    <meta name='dtb:maxPageNumber' content='0' />
+  </head>
+  <docTitle>
+    <text>Testowa książka</text>
+  </docTitle>
+  <docAuthor>
+    <text>Tomasz Sulej</text>
+  </docAuthor>
+  <navMap>
+    <navPoint playOrder='0' class='periodical' id='periodical'>
+      <mbp:meta-img src='masthead.gif' name='mastheadImage' id='masthead' />
+      <navLabel>
+        <text>Table of Contents</text>
+      </navLabel>
+      <content src='toc.html' />
+      <navPoint playOrder='1' class='section' id='section_1'>
+        <navLabel>
+          <text>Sekcja A</text>
+        </navLabel>
+        <content src='a.html' />
+        <navPoint playOrder='2' class='article' id='doc_h1'>
+          <navLabel>
+            <text>Startowa</text>
+          </navLabel>
+          <content src='a.html' />
+        </navPoint>
+        <navPoint playOrder='3' class='article' id='doc_h2'>
+          <navLabel>
+            <text>Druga strona</text>
+          </navLabel>
+          <content src='b.html' />
+        </navPoint>
+      </navPoint>
+      <navPoint playOrder='4' class='section' id='section_4'>
+        <navLabel>
+          <text>Sekcja B</text>
+        </navLabel>
+        <content src='c.html' />
+        <navPoint playOrder='5' class='article' id='doc_h3'>
+          <navLabel>
+            <text>Strona 3 i ostatnia</text>
+          </navLabel>
+          <content src='c.html' />
+        </navPoint>
+      </navPoint>
+    </navPoint>
+  </navMap>
+</ncx>

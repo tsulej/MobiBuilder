@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<package xmlns='http://www.idpf.org/2007/opf' version='2.0' unique-identifier='book_id'>
+  <metadata xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:opf='http://www.idpf.org/2007/opf'>
+    <dc:title>Testowa książka</dc:title>
+    <dc:language>pl</dc:language>
+    <dc:creator>Tomasz Sulej</dc:creator>
+    <dc:publisher>[publisher not set]</dc:publisher>
+    <dc:subject>[subject not set]</dc:subject>
+    <dc:date>2011-12-09</dc:date>
+    <dc:description>łódź</dc:description>
+    <dc:identifier id='book_id'>8c5ff431-5f32-4bf8-b25e-c5a3a721d981</dc:identifier>
+    <meta name='cover' content='book_cover' />
+    <x-metadata>
+      <output content-type='application/x-mobipocket-subscription-magazine' encoding='utf-8' />
+    </x-metadata>
+  </metadata>
+  <manifest>
+    <item id='h1' href='a.html' media-type='application/xhtml+xml' />
+    <item id='h2' href='b.html' media-type='application/xhtml+xml' />
+    <item id='h3' href='c.html' media-type='application/xhtml+xml' />
+    <item id='i1' href='1.jpg' media-type='image/jpeg' />
+    <item id='i2' href='2.gif' media-type='image/gif' />
+    <item id='toc_ncx' href='toc.ncx' media-type='application/x-dtbncx+xml' />
+    <item id='book_cover' href='cover.jpg' media-type='image/jpeg' />
+    <item id='toc_html' href='toc.html' media-type='application/xhtml+xml' />
+    <item id='masthead' href='masthead.gif' media-type='image/gif' />
+  </manifest>
+  <spine toc='toc_ncx'>
+    <itemref idref='toc_html' />
+    <itemref idref='h1' />
+    <itemref idref='h2' />
+    <itemref idref='h3' />
+  </spine>
+  <guide>
+    <reference type='toc' title='Table of Contents' href='toc.html' />
+    <reference type='text' title='Startowa' href='a.html' />
+  </guide>
+</package>

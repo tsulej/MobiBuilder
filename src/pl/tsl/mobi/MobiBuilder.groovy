@@ -8,7 +8,7 @@ class MobiBuilder {
 	boolean periodical = false
 	
 	String cover_name = 'cover.jpg' // max 600x800
-	String masthead_name = 'masthead.gif' // max 600x100.
+	String masthead_name = 'masthead.gif' // max 600x100
 	String title = '[title not set]'
 	String language = 'en-US'
 	String creator = '[creator not set]'

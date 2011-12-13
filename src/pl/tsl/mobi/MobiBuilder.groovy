@@ -31,9 +31,7 @@ class MobiBuilder {
 	
 	/*
 	 * Content structure is a map with following content
-	 *  - 'html' - array of html files, each value is an array [id, value, title]
-	 *  - 'sections' - map of sections, key: section name, value: html ids list, there are no subsections in TOC
-	 *  - 'imgs' - map of images files, key: id, value: filename
+	 *   /look at example in TestBook class
 	 *  
 	 */
 	def content

@@ -31,7 +31,7 @@ class MobiBuilder {
 	
 	/*
 	 * Content structure is a map with following content
-	 *   /look at example in TestBook class
+	 *   look at example in TestBook script
 	 *  
 	 */
 	def content

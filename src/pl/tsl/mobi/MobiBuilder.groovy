@@ -119,10 +119,10 @@ class MobiBuilder {
 					navPoint('playOrder':order_id,'class':'article','id':"doc_${a_id}") {
 						navLabel { text( getSourcebyId(a_id)[2]) }
 						content('src' : getSourcebyId(a_id)[1])
-						//mpb:meta tags for article list in periodicals
-						//'mbp:meta'('name':'description','description here')
-						//'mbp:meta'('name':'author','authors here')
-												
+						if(periodical) {
+							'mbp:meta'('name':'description',content.mbpmeta[a_id][1])
+							'mbp:meta'('name':'author',content.mbpmeta[a_id][0])
+						}					
 						order_id++
 					}
 				}

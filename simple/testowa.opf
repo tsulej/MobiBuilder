@@ -8,7 +8,7 @@
     <dc:subject>[subject not set]</dc:subject>
     <dc:date>2011-12-09</dc:date>
     <dc:description>łódź</dc:description>
-    <dc:identifier id='book_id'>8c5ff431-5f32-4bf8-b25e-c5a3a721d981</dc:identifier>
+    <dc:identifier id='book_id'>d9be89d6-c55f-4b71-a840-7e4905e7c815</dc:identifier>
     <meta name='cover' content='book_cover' />
     <x-metadata>
       <output content-type='application/x-mobipocket-subscription-magazine' encoding='utf-8' />

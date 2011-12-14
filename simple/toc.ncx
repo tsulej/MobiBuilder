@@ -30,12 +30,16 @@
             <text>Startowa</text>
           </navLabel>
           <content src='a.html' />
+          <mbp:meta name='description'>description 1</mbp:meta>
+          <mbp:meta name='author'>author 1</mbp:meta>
         </navPoint>
         <navPoint playOrder='3' class='article' id='doc_h2'>
           <navLabel>
             <text>Druga strona</text>
           </navLabel>
           <content src='b.html' />
+          <mbp:meta name='description'>description 2</mbp:meta>
+          <mbp:meta name='author'>author 2</mbp:meta>
         </navPoint>
       </navPoint>
       <navPoint playOrder='4' class='section' id='section_4'>
@@ -48,6 +52,8 @@
             <text>Strona 3 i ostatnia</text>
           </navLabel>
           <content src='c.html' />
+          <mbp:meta name='description'>description 3</mbp:meta>
+          <mbp:meta name='author'>author 3</mbp:meta>
         </navPoint>
       </navPoint>
     </navPoint>

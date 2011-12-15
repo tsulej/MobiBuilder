@@ -7,14 +7,19 @@ class EditionBuilder {
 	private static final String url_base = 'http://esensja.pl/magazyn/' 
 	
 	boolean parse_file = false
-	boolean simulate = false
+	boolean simulate = true
 	
 	String edition_year
 	String edition_month
 	private String url_path 
 	private output_path
 	
-	def content
+	def content = [
+		'html' : [],
+		'sections' : [],
+		'imgs' : [:],
+		'mbpmeta' : [:]
+	]
 	private def parser
 	
 	private def init(op) {
@@ -118,22 +123,91 @@ class EditionBuilder {
 	}
 	
 	
+	private def createTOCInfo(xml) {
+		// table of contents
+		def toc_info = [:]
+		// order of chapters
+		def toc = []
+		def current_chapter = 'Wstęp'
+		def current_subchapter = ''
+		def current_chapter_name = { a,b ->
+			if(b) {
+			  return "$a - $b"
+			} else {
+			  return a
+			}
+		}.memoize()		
+		
+		xml.each { tr ->
+			def type = tr.TD.'@class'[0]
+			switch(type) {
+				case 'position':
+					def title_tag = tr.TD.DIV.grep { it.'@class' == 'n-title' }
+					def art_url = title_tag[0].A.'@href'[0]
+					def art_title = title_tag[0].A.text()
+					def author_name = tr.TD.DIV.grep { it.'@class' == 'n-author' }[0].text()
+					def art_descr = tr.TD.DIV.grep { it.'@class' == 'subtitle' }[0].text()
+					def section = current_chapter_name(current_chapter, current_subchapter)
+
+					def ttt = toc_info[section]
+					if(!ttt) {
+						ttt = []
+					}
+					toc_info[section] = ttt << [art_url, art_title, author_name, art_descr]
+					if(!toc.contains(section)) {
+						toc += section
+					}
+					break
+				
+				case 'chapter':
+					current_chapter = tr.TD.text()
+					break
+					
+				case 'subchapter':
+					current_subchapter = tr.TD.text()
+					break
+			}
+		}
+		
+		toc_info['_TOC_'] = toc
+		return toc_info
+	}
+	
 	def parseEdition() {
 		def page = parseURL('index.html')
 	
+		//cover and cover page
 		def covername = page.BODY.CENTER.TABLE.TBODY.TR[1].TD.A.IMG.'@src'[0]
 		def coverauthor = page.BODY.CENTER.TABLE.TBODY.TR[1].TD.FONT.text()
 		def editionno = page.BODY.CENTER.TABLE.TBODY.TR[0].TD.TABLE.TBODY.TR.TD[0].FONT[1..3].inject('') { str, item -> str + item.text() }
 		saveFile(getFile(covername),_cover)
 		createFirstPage(covername, coverauthor,editionno)
 		
+		// parse first page, get masthead and toc
 		def firstpage = page.BODY.CENTER.TABLE.TBODY.TR[1].TD.A.'@href'[0]
 		page = parseURL(firstpage)
-		
 		def mastheadname = page.BODY.DIV.TABLE.TBODY.TR[1].TD.TABLE[1].TBODY.TR[1].TD.TABLE.TBODY.TR.TD.TABLE.TBODY.TR[0].TD[1].P.IMG.'@src'[0].substring(3)
 		saveFile(getFile(mastheadname),_masthead)
 		
+		def toc_tab = page.BODY.DIV.TABLE.TBODY.TR[1].TD.TABLE[1].TBODY.TR[1].TD.TABLE.TBODY.TR.TD.TABLE.TBODY.TR[2].TD.TABLE.TBODY.TR.TD[0].TABLE.TBODY.TR + page.BODY.DIV.TABLE.TBODY.TR[1].TD.TABLE[1].TBODY.TR[1].TD.TABLE.TBODY.TR.TD.TABLE.TBODY.TR[2].TD.TABLE.TBODY.TR.TD[1].TABLE.TBODY.TR
+	
+		//iterate through toc
+		def toc_info = createTOCInfo(toc_tab)
+		def chapter_order = toc_info.remove('_TOC_')
 		
+		def art_counter = 1
+		def imgs_counter = 1
+		chapter_order.each { section ->
+			def art_list = []
+			
+			// teraz lecimy po kolei artykuły, parsujemy, zapisujemy uproszczenie i uzupełniamy content
+			
+			content['sections'] <<= [section,art_list]
+		}	
+		
+		
+		// TODO: add firstpage as a first article in first section!
+		return content
 	}
 	
 }

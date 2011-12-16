@@ -120,6 +120,7 @@ class MobiBuilder {
 						navLabel { text( getSourcebyId(a_id)[2]) }
 						content('src' : getSourcebyId(a_id)[1])
 						if(periodical) {
+							//println "a_id=${a_id} ${content.mbpmeta[a_id]}"
 							'mbp:meta'('name':'description',content.mbpmeta[a_id][1])
 							'mbp:meta'('name':'author',content.mbpmeta[a_id][0])
 						}					

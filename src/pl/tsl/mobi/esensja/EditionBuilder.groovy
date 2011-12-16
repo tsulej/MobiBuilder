@@ -175,7 +175,7 @@ class EditionBuilder {
 	
 	def parseEdition() {
 		def page = parseURL('index.html')
-	
+		
 		//cover and cover page
 		def covername = page.BODY.CENTER.TABLE.TBODY.TR[1].TD.A.IMG.'@src'[0]
 		def coverauthor = page.BODY.CENTER.TABLE.TBODY.TR[1].TD.FONT.text()
@@ -195,10 +195,33 @@ class EditionBuilder {
 		def toc_info = createTOCInfo(toc_tab)
 		def chapter_order = toc_info.remove('_TOC_')
 		
-		def art_counter = 1
-		def imgs_counter = 1
+		def getArtName = { url ->
+			return 'h' + url.findAll(/[0-9]/).join('')
+		}
+		
+		boolean first = true
 		chapter_order.each { section ->
 			def art_list = []
+			
+			if(first) {
+				art_list += 'firstpage'
+				content['html'] <<= ['firstpage','firstpage.html','Okładka']
+				content['mbpmeta']['firstpage'] = ['Esensja','Okładka']
+				
+				first = false
+			}
+			
+			//[art_url, art_title, author_name, art_descr]
+			toc_info[section].each { art_url, art_title, author_name, art_descr ->
+				def html_id = getArtName(art_url)
+				//parse art URL and get images
+				def imgs = parseArticle(art_url, html_id)
+				content['imgs'] += imgs
+				
+				content['html'] <<= [html_id,"${html_id}.html",art_title]
+				content['mbpmeta'][html_id] = [author_name,art_descr]
+ 				art_list += html_id
+			}
 			
 			// teraz lecimy po kolei artykuły, parsujemy, zapisujemy uproszczenie i uzupełniamy content
 			
@@ -208,6 +231,13 @@ class EditionBuilder {
 		
 		// TODO: add firstpage as a first article in first section!
 		return content
+	}
+	
+	//produce html and get all necessary images
+	private def parseArticle(art_url, html_id) {
+		def imgs_tab = []
+		
+		return imgs_tab
 	}
 	
 }

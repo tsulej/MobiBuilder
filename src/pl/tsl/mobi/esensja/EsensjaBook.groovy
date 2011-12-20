@@ -19,5 +19,6 @@ b.creator = 'Esensja'
 b.date = '2011-08'
 b.title = 'Esensja 08.2011'
 b.language = 'pl'
+b.subject = 'Esensja,Newsy'
 b.description = 'Magazyn Esensja 08.2011'
 b.generateBook()

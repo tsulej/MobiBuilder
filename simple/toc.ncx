@@ -11,7 +11,7 @@
     <text>Testowa książka</text>
   </docTitle>
   <docAuthor>
-    <text>Tomasz Sulej</text>
+    <text>tsulej</text>
   </docAuthor>
   <navMap>
     <navPoint playOrder='0' class='periodical' id='periodical'>
@@ -27,7 +27,7 @@
         <content src='a.html' />
         <navPoint playOrder='2' class='article' id='doc_h1'>
           <navLabel>
-            <text>Startowa</text>
+            <text>Dokument pierwszy</text>
           </navLabel>
           <content src='a.html' />
           <mbp:meta name='description'>description 1</mbp:meta>
@@ -35,7 +35,7 @@
         </navPoint>
         <navPoint playOrder='3' class='article' id='doc_h2'>
           <navLabel>
-            <text>Druga strona</text>
+            <text>Dokument drugi</text>
           </navLabel>
           <content src='b.html' />
           <mbp:meta name='description'>description 2</mbp:meta>
@@ -49,7 +49,7 @@
         <content src='c.html' />
         <navPoint playOrder='5' class='article' id='doc_h3'>
           <navLabel>
-            <text>Strona 3 i ostatnia</text>
+            <text>Dokument trzeci</text>
           </navLabel>
           <content src='c.html' />
           <mbp:meta name='description'>description 3</mbp:meta>

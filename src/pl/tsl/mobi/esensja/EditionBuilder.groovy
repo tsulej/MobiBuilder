@@ -7,7 +7,7 @@ class EditionBuilder {
 	private static final String url_base = 'http://esensja.pl/magazyn/' 
 	
 	boolean parse_file = false
-	boolean simulate = true
+	boolean simulate = false
 	
 	String edition_year
 	String edition_month
@@ -46,7 +46,7 @@ class EditionBuilder {
 	// Parse content from URL (file or web)
 	private def parseURL(name) {
 		if(parse_file){
-		  return new XmlParser(parser).parse(new FileReader(url_path + name))
+		  return new XmlParser(parser).parse(new InputStreamReader(new FileInputStream(url_path + name),'UTF-8'))
 		} else {
 		  return new XmlParser(parser).parse(url_path + name)
 		}
@@ -66,9 +66,7 @@ class EditionBuilder {
 		println "Saving file: $name"
 		if(simulate) return
 		def f = new File(output_path + name)
-		if(f.exists()) {
-			f.delete()
-		} 
+		if(f.exists()) f.delete()
 		f << what
 	}
 	
@@ -76,6 +74,7 @@ class EditionBuilder {
 	private final static String _cover = 'img/cover.jpg'
 	private final static String _masthead = 'img/masthead.jpg'
 	private final static String _firstpage = 'firstpage.html'
+	private final static String _html_prefix = 'iso/'
 	
 	private def createHTMLPage(String path, String pagetitle, Closure pagecontent) {
 		println "Creating HTML $path with title $pagetitle"
@@ -83,8 +82,8 @@ class EditionBuilder {
 		if(simulate) {
 			writer = new StringWriter()	
 		} else {
-			//writer = new OutputStreamWriter(new FileOutputStream(output_path + path),'UTF-8')
-			writer = new FileWriter(output_path + path)
+			writer = new OutputStreamWriter(new FileOutputStream(output_path + path),'UTF-8')
+			//writer = new FileWriter(output_path + path)
 		}
 		def htmlb = new MarkupBuilder(writer)
 		htmlb.mkp.xmlDeclaration('version':'1.0','encoding':'UTF-8')
@@ -173,6 +172,22 @@ class EditionBuilder {
 		return toc_info
 	}
 	
+	
+	// save image from url to a destination, if file is already processed just return previous name to use
+	// attrs: name - url, dstname - name to save, trim - trim leading path, default first 3 chars '../'
+	private def processedimgs = [:]
+	private def img_id = 1
+	private def processImage(name,dstname,trim=3) {
+		if(!processedimgs.containsKey(name)) {
+			processedimgs[name] = ["i_${img_id}",dstname]
+			def tmp_name = name
+			if(trim) tmp_name = name.substring(trim)
+			saveFile(getFile(tmp_name),dstname)
+			img_id++
+		} 
+		return processedimgs[name]
+	}
+	
 	def parseEdition() {
 		def page = parseURL('index.html')
 		
@@ -180,14 +195,14 @@ class EditionBuilder {
 		def covername = page.BODY.CENTER.TABLE.TBODY.TR[1].TD.A.IMG.'@src'[0]
 		def coverauthor = page.BODY.CENTER.TABLE.TBODY.TR[1].TD.FONT.text()
 		def editionno = page.BODY.CENTER.TABLE.TBODY.TR[0].TD.TABLE.TBODY.TR.TD[0].FONT[1..3].inject('') { str, item -> str + item.text() }
-		saveFile(getFile(covername),_cover)
+		processImage(covername,_cover,0)
 		createFirstPage(covername, coverauthor,editionno)
 		
 		// parse first page, get masthead and toc
 		def firstpage = page.BODY.CENTER.TABLE.TBODY.TR[1].TD.A.'@href'[0]
 		page = parseURL(firstpage)
-		def mastheadname = page.BODY.DIV.TABLE.TBODY.TR[1].TD.TABLE[1].TBODY.TR[1].TD.TABLE.TBODY.TR.TD.TABLE.TBODY.TR[0].TD[1].P.IMG.'@src'[0].substring(3)
-		saveFile(getFile(mastheadname),_masthead)
+		def mastheadname = page.BODY.DIV.TABLE.TBODY.TR[1].TD.TABLE[1].TBODY.TR[1].TD.TABLE.TBODY.TR.TD.TABLE.TBODY.TR[0].TD[1].P.IMG.'@src'[0]
+		processImage(mastheadname,_masthead)
 		
 		def toc_tab = page.BODY.DIV.TABLE.TBODY.TR[1].TD.TABLE[1].TBODY.TR[1].TD.TABLE.TBODY.TR.TD.TABLE.TBODY.TR[2].TD.TABLE.TBODY.TR.TD[0].TABLE.TBODY.TR + page.BODY.DIV.TABLE.TBODY.TR[1].TD.TABLE[1].TBODY.TR[1].TD.TABLE.TBODY.TR.TD.TABLE.TBODY.TR[2].TD.TABLE.TBODY.TR.TD[1].TABLE.TBODY.TR
 	
@@ -200,7 +215,8 @@ class EditionBuilder {
 		}
 		
 		boolean first = true
-		chapter_order.each { section ->
+		//chapter_order.each { section ->
+		chapter_order[0..1].each { section ->
 			def art_list = []
 			
 			if(first) {
@@ -223,19 +239,89 @@ class EditionBuilder {
  				art_list += html_id
 			}
 			
-			// teraz lecimy po kolei artykuły, parsujemy, zapisujemy uproszczenie i uzupełniamy content
-			
 			content['sections'] <<= [section,art_list]
 		}	
 		
-		
-		// TODO: add firstpage as a first article in first section!
 		return content
 	}
 	
 	//produce html and get all necessary images
 	private def parseArticle(art_url, html_id) {
-		def imgs_tab = []
+		def imgs_tab = [:]
+		
+		println "Parsing ${art_url} with id ${html_id}"
+		def start_url = _html_prefix + art_url
+	
+		def page = parseURL(start_url)
+		def body = page.BODY.DIV.TABLE.TBODY.TR[1].TD
+		def body_title = body.TABLE[0].TBODY.TR.TD
+		def body_value = body.TABLE[1].TBODY.TR[1].TD.TABLE.TBODY.TR.TD
+		
+		def art_title = body_title.DIV.grep { it.'@class' == 't-title'}[0].text()
+		
+		def buildhtml = { htmlid, arttitle, imgs, titlebody, textbody, htmlb ->
+			def parsingbody = textbody
+			def isnext = true // assume there is next part of article
+			def istitle = false // get title/author/subtitle from first page
+			while(isnext) {
+				
+				
+				if(!istitle) {
+					// author avatar
+					def avatar
+					if(titlebody.IMG.size() > 0) {
+						def imgname = "img/i_crew_${htmlid}.jpg"
+						def id_tab = processImage(titlebody.IMG.'@src'[0],imgname)
+						imgs[id_tab[0]] = id_tab[1]
+						avatar = id_tab[1]
+					}
+					
+					def subtitle = titlebody.DIV.grep { it.'@class' == 't-title2' }[0].text()
+					def authors = titlebody.DIV.grep { it.'@class' == 't-author'}[0]
+					
+						htmlb.p {
+						if(avatar) {
+							span { img('src': avatar) }
+						}
+						span {
+							
+							def authors_no = authors.A.size() 
+							if(authors_no > 0) {
+								div {
+									authors.A.eachWithIndex { item, i ->
+										a('href':item.'@href',item.text())
+										if(authors_no-1 != i) mkp.yieldUnescaped(', ')
+									}
+								}
+							} else {
+							  div(authors.text())
+							}
+							br()
+							div {
+								'i'(subtitle)
+							}
+							
+						}
+					}
+					htmlb.hr()	
+					istitle = true					
+				}
+				
+				// title processed, time for real text
+				
+				htmlb.p {
+					textbody.DIV.each {
+						p(it.text())
+					}
+				}
+				
+				isnext = false
+			}		
+								
+		
+		}.curry(html_id).curry(art_title).curry(imgs_tab).curry(body_title).curry(body_value)
+		
+		createHTMLPage("${html_id}.html", art_title,buildhtml)
 		
 		return imgs_tab
 	}

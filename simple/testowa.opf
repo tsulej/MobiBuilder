@@ -3,12 +3,12 @@
   <metadata xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:opf='http://www.idpf.org/2007/opf'>
     <dc:title>Testowa książka</dc:title>
     <dc:language>pl</dc:language>
-    <dc:creator>Tomasz Sulej</dc:creator>
-    <dc:publisher>[publisher not set]</dc:publisher>
-    <dc:subject>[subject not set]</dc:subject>
+    <dc:creator>tsulej</dc:creator>
+    <dc:publisher>self</dc:publisher>
+    <dc:subject>test</dc:subject>
     <dc:date>2011-12-09</dc:date>
-    <dc:description>łódź</dc:description>
-    <dc:identifier id='book_id'>d9be89d6-c55f-4b71-a840-7e4905e7c815</dc:identifier>
+    <dc:description>ąęóśłżźćń �?ÓĄŚ�?ŻŹĆ�?</dc:description>
+    <dc:identifier id='book_id'>3739d5cf-cb66-42f4-bc5b-8b817620cd5e</dc:identifier>
     <meta name='cover' content='book_cover' />
     <x-metadata>
       <output content-type='application/x-mobipocket-subscription-magazine' encoding='utf-8' />
@@ -33,6 +33,6 @@
   </spine>
   <guide>
     <reference type='toc' title='Table of Contents' href='toc.html' />
-    <reference type='text' title='Startowa' href='a.html' />
+    <reference type='text' title='Dokument pierwszy' href='a.html' />
   </guide>
 </package>
